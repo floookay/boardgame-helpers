@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Zufallsgenerator Risiko</title>
+    <title>Risk - 1v1</title>
 </head>
 <style>
 .line{
@@ -23,11 +23,11 @@ p.number{
 </style>
 
 <body style="text-align:center; font-family: Verdana, Geneva, sans-serif;">
-    <div style="font-weight: bold; font-size: 40px; padding:0px;">Zufallsgenerator 2</div>
-    <div style="font-size: 30px; padding:0px;">Risk of Thrones</div>
+    <div style="font-weight: bold; font-size: 40px; padding:0px;">Risk</div>
+    <div style="font-size: 30px; padding:0px;">1v1</div>
 
     <div class="line" style="background-color:blue; color:white;">
-        <p style="display: block;">Angreifer</p>
+        <p style="display: block;">Attacker</p>
         <button class="button" onclick="minus('attackers', 5)">-5</button>
         <button class="button" onclick="minus('attackers', 1)">-</button>
         <p class="number" id='attackers'>0</p> <!-- BLAU -->
@@ -36,7 +36,7 @@ p.number{
     </div>
 
     <div class="line" style="background-color:red;">
-        <p style="display: block;">Verteidiger</p>
+        <p style="display: block;">Defender</p>
         <button class="button" onclick="minus('defenders', 5)">-5</button>
         <button class="button" onclick="minus('defenders', 1)">-</button>
         <p class="number" id='defenders'>0</p> <!-- ROT -->
@@ -131,7 +131,7 @@ p.number{
             units['attackers'] = 0;
             units['defenders'] = 0;
             document.getElementById('attackers').innerHTML = 0;
-            document.getElementById('defenders').innerHTML = 0;
+        	document.getElementById('defenders').innerHTML = 0;
         }
     </script>
 
