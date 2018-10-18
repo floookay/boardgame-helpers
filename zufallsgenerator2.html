@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Zufallsgenerator Risiko</title>
+</head>
+<style>
+.line{
+    padding:    5px;
+    margin:     auto;
+    width:      80%;
+}
+button{
+    padding:    2px    15px;
+}
+p.number{
+    padding:    2px    20px;
+    display:    inline;
+}
+</style>
+
+<body style="text-align:center; font-family: Verdana, Geneva, sans-serif;">
+    <div style="font-weight: bold; font-size: 40px; padding:0px;">Zufallsgenerator 2</div>
+    <div style="font-size: 30px; padding:0px;">Risk of Thrones</div>
+
+    <div class="line" style="background-color:blue; color:white;">
+        <p style="display: block;">Angreifer</p>
+        <button class="button" onclick="minus('attackers', 5)">-5</button>
+        <button class="button" onclick="minus('attackers', 1)">-</button>
+        <p class="number" id='attackers'>0</p> <!-- BLAU -->
+        <button class="button" onclick="plus('attackers', 1)">+</button>
+        <button class="button" onclick="plus('attackers', 5)">+5</button>
+    </div>
+
+    <div class="line" style="background-color:red;">
+        <p style="display: block;">Verteidiger</p>
+        <button class="button" onclick="minus('defenders', 5)">-5</button>
+        <button class="button" onclick="minus('defenders', 1)">-</button>
+        <p class="number" id='defenders'>0</p> <!-- ROT -->
+        <button class="button" onclick="plus('defenders', 1)">+</button>
+        <button class="button" onclick="plus('defenders', 5)">+5</button>
+    </div>
+
+    <div>
+        <button type="reset" onclick="reset()" style="padding:5px 23px">Reset</button>
+        <button type="submit" onclick="fightOne()" style="padding:5px 10px">Krieg</button>
+    </div>
+    <div>
+        <button type="submit" onclick="fightAll()" style="padding:5px 41px">Totaler Krieg</button>
+    </div>
+
+    <script>
+        var units = [];
+        units['attackers'] = 0;
+        units['defenders'] = 0;
+
+        function plus(id, amount) {
+            units[id] += amount;
+            document.getElementById(id).innerHTML = units[id];
+        }
+
+        function minus(id, amount) {
+            if (units[id] - amount >= 0)
+                units[id] -= amount;
+            document.getElementById(id).innerHTML = units[id];
+        }
+
+        function fightOne() {
+            //pre-requirements
+            if (units['attackers'] <= 1) {
+                return;
+            }
+
+            //preperation
+            var attacking, defending;
+            if (units['attackers'] >= 4) {
+                attacking = 3;
+            } else {
+                attacking = units['attackers'] - 1;
+            }
+            if (units['defenders'] >= 2) {
+                defending = 2;
+            } else {
+                defending = units['defenders'];
+            }
+
+            //throw die
+            var attack_die = [];
+            for (var i = 0; i < attacking; i++) {
+                attack_die.push(Math.floor(Math.random() * 6) + 1);
+            }
+            var defend_die = [];
+            for (var i = 0; i < defending; i++) {
+                defend_die.push(Math.floor(Math.random() * 6) + 1);
+            }
+
+            var attacks = Math.min(attacking, defending);
+            for (var i = 0; i < attacks; i++) {
+                console.log('round ' + i);
+                //get best die
+                var best_defender = Math.max(...defend_die);
+                console.log('best def = ' + best_defender);
+                defend_die.splice(defend_die.indexOf(best_defender), 1);
+                var best_attacker = Math.max(...attack_die);
+                console.log('best att = ' + best_attacker);
+                attack_die.splice(attack_die.indexOf(best_attacker), 1);
+
+                //remove units
+                if (best_attacker > best_defender) {
+                    console.log('shmell ya later defender');
+                    units['defenders']--;
+                    document.getElementById('defenders').innerHTML = units['defenders'];
+                } else {
+                    console.log('shmell ya later attacker');
+                    units['attackers']--;
+                    document.getElementById('attackers').innerHTML = units['attackers'];
+                }
+            }
+        }
+
+        function fightAll() {
+            while (units['attackers'] > 1 && units['defenders'] > 0) {
+                fightOne();
+            }
+        }
+
+        function reset() {
+            units['attackers'] = 0;
+            units['defenders'] = 0;
+            document.getElementById('attackers').innerHTML = 0;
+            document.getElementById('defenders').innerHTML = 0;
+        }
+    </script>
+
+</body>
+
+</html>
