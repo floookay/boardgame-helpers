@@ -83,6 +83,7 @@
             }
 
             log("battle #" + battle);
+            log(attacker + " attackers vs. " + defender + " defenders");
             //preperation
             var attacking, defending;
             if (attacker >= 4) {
@@ -140,7 +141,6 @@
             }
 
             log("This means war!");
-            log(attacker + " attackers vs. " + defender + " defenders");
             while (attacker > 1 && defender > 0) {
                 fightOne(battle);
                 var attacker = document.getElementById("attacker").value;
