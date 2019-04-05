@@ -1,11 +1,38 @@
 ﻿<!DOCTYPE html>
 <style>
+    body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 40px;
+        padding: 0px;
+    }
+
+    #caption {
+        font-size: 30px;
+        padding: 0px;
+    }
+
     .line {
         padding: 15px;
-        margin: auto;
+        margin: 15px auto;
         width: 80%;
     }
 
+    #attacker, #defender {
+        width: 60px;
+    }
+
+    #log {
+        padding-top: 15px;
+        font-family: monospace;
+        text-align: left;
+        margin: auto;
+        width: 50%
+    }
 </style>
 <html>
 
@@ -16,26 +43,36 @@
     <title>Risk - 1v1</title>
 </head>
 
-<body style="text-align:center; font-family: Verdana, Geneva, sans-serif;">
-    <div style="font-weight: bold; font-size: 40px; padding:0px;">Risk</div>
-    <div style="font-size: 30px; padding:0px;">Attacker vs. Defender</div>
+<body>
+    <div id="title">Risk</div>
+    <div id="caption">Attacker vs. Defender</div>
 
     <div class="line" style="background-color:yellowgreen;">
-        <input id="attacker" type="number" min="0" value="0" step="1"/>
+        <input id="attacker" type="number" min="0" value="0" step="1" />
         <div style="display:inline-block">vs.</div>
-        <input id="defender" type="number" min="0" value="0" step="1"/>
+        <input id="defender" type="number" min="0" value="0" step="1" />
     </div>
 
     <div>
         <button type="reset" onclick="reset()" style="padding:5px 23px">Reset</button>
-        <button type="submit" onclick="fightOne()" style="padding:5px 10px">Battle</button>
+        <button type="submit" onclick="fightOne(1)" style="padding:5px 10px">Battle</button>
     </div>
     <div>
         <button type="submit" onclick="fightAll()" style="padding:5px 41px">Battle to death</button>
     </div>
 
+    <div id="log">
+        <p>battle-log:</p>
+    </div>
+
     <script>
-        function fightOne() {
+        function log(string) {
+            let node = document.createElement("p");
+            node.textContent = string;
+            document.getElementById("log").appendChild(node);
+        }
+
+        function fightOne(battle) {
             //get units
             var attacker = document.getElementById("attacker").value;
             var defender = document.getElementById("defender").value;
@@ -45,6 +82,7 @@
                 return;
             }
 
+            log("battle #" + battle);
             //preperation
             var attacking, defending;
             if (attacker >= 4) {
@@ -70,25 +108,22 @@
 
             var attacks = Math.min(attacking, defending);
             for (var i = 0; i < attacks; i++) {
-                console.log('round ' + i);
-
                 //get best die
                 var best_defender = Math.max(...defend_die);
-                console.log('best defender is ' + best_defender);
                 defend_die.splice(defend_die.indexOf(best_defender), 1);
                 var best_attacker = Math.max(...attack_die);
-                console.log('best attacker is ' + best_attacker);
                 attack_die.splice(attack_die.indexOf(best_attacker), 1);
+                log("[" + best_attacker + "] vs. [" + best_defender + "]")
 
                 //remove units
                 if (best_attacker > best_defender) {
-                    console.log('killed a defender');
+                    log("killed a defender");
                     defender--;
-                    document.getElementById('defender').value = defender;
+                    document.getElementById("defender").value = defender;
                 } else {
-                    console.log('killed a attacker');
+                    log("killed a attacker");
                     attacker--;
-                    document.getElementById('attacker').value = attacker;
+                    document.getElementById("attacker").value = attacker;
                 }
             }
         }
@@ -97,18 +132,34 @@
             //get units
             var attacker = document.getElementById("attacker").value;
             var defender = document.getElementById("defender").value;
+            var battle = 1;
 
-            console.log(attacker + " vs " + defender);
+            //pre-requirements
+            if (attacker <= 1) {
+                return;
+            }
+
+            log("This means war!");
+            log(attacker + " attackers vs. " + defender + " defenders");
             while (attacker > 1 && defender > 0) {
-                fightOne();
+                fightOne(battle);
                 var attacker = document.getElementById("attacker").value;
                 var defender = document.getElementById("defender").value;
+                battle++;
             }
         }
 
         function reset() {
-            document.getElementById('attacker').value = 0;
-            document.getElementById('defender').value = 0;
+            document.getElementById("attacker").value = 0;
+            document.getElementById("defender").value = 0;
+
+            var log = document.getElementById("log");
+            while (log.firstChild) {
+                log.removeChild(log.firstChild);
+            }
+            var p = document.createElement("p");
+            p.textContent = "battle-log:";
+            log.appendChild(p);
         }
 
     </script>
