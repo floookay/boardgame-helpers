@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<style>
+    body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 40px;
+        padding: 0px;
+    }
+
+    #caption {
+        font-size: 30px;
+        padding: 0px;
+    }
+
+    .line {
+        padding: 15px;
+        margin: 15px auto;
+        width: 80%;
+    }
+
+    .players {
+        width: 60px;
+    }
+
+    #log {
+        padding-top: 15px;
+        font-family: monospace;
+        text-align: left;
+        margin: auto;
+        width: 50%
+    }
+</style>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Risk - FFA</title>
+</head>
+
+<body>
+    <div id="title">Risk</div>
+    <div id="caption">Free For All</div>
+
+    <div class="line" style="background-color:rgb(0, 0, 0);">
+        <input class="players" id="player0" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(41, 53, 223);">
+        <input class="players" id="player1" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(190, 52, 52);">
+        <input class="players" id="player2" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(50, 205, 50);">
+        <input class="players" id="player3" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(135, 50, 205);">
+        <input class="players" id="player4" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(205, 202, 50);">
+        <input class="players" id="player5" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(50, 195, 205);">
+        <input class="players" id="player6" type="number" min="0" value="0" step="1" />
+    </div>
+    <div class="line" style="background-color:rgb(200, 50, 205);">
+        <input class="players" id="player7" type="number" min="0" value="0" step="1" />
+    </div>
+
+
+    <div>
+        <button type="reset" onclick="reset()" style="padding:5px 23px">Reset</button>
+        <button type="submit" onclick="fightOne(1,false)" style="padding:5px 10px">Battle</button>
+    </div>
+    <div>
+        <button type="submit" onclick="fightAll()" style="padding:5px 41px">Battle to death</button>
+    </div>
+
+    <div id="log">
+        <p>battle-log:</p>
+    </div>
+
+    <script type="text/javascript">
+        var numPlayers = 8; //number of attackers
+        var players = []; //units per player by playerId
+        var attackers = []; //playerId's of possible attackers
+        var defenders = []; //playerId's of possible attackers
+
+        function log(string) {
+            let node = document.createElement("p");
+            node.textContent = string;
+            document.getElementById("log").appendChild(node);
+        }
+
+        //get units from input fields and save to array
+        function setPlayerUnits(){
+            for (let i = 0; i < numPlayers; i++) {
+                players[i] = document.getElementById("player" + i).value;
+            }
+        }
+
+        //delete previous attackers and set them again using the array
+        function setAttackersDefenders(){
+            attackers = [];
+            defenders = [];
+            for (let i = 0; i < numPlayers; i++) {
+                if (players[i] > 1)
+                    attackers.push(i);
+                if (players[i] > 0)
+                    defenders.push(i);
+            }
+        }
+
+        //fight a single battle by selecting a random attacker and random defender
+        function fightOne(battle, fightAll) {
+            //get units
+            if(fightAll == false){
+                setPlayerUnits();
+                setAttackersDefenders();
+            }
+
+            //pre-requirements
+            if (attackers.length < 1 || defenders.length < 2)
+                return;
+
+            //select a random attacker
+            var attackerId = attackers[Math.floor(Math.random() * attackers.length)];
+            var attackerUnits = players[attackerId];
+
+            //select a random defender
+            let remainingDefenders = [];
+            defenders.forEach(defenderId => {
+                if (defenderId != attackerId) {
+                    remainingDefenders.push(defenderId);
+                }
+            });
+            var defenderId = remainingDefenders[Math.floor(Math.random() * remainingDefenders.length)];
+            var defenderUnits = players[defenderId];
+
+
+            log("battle #" + battle);
+            log(attackerUnits + " attackers vs. " + defenderUnits + " defenders");
+            //preperation
+            var attacking, defending;
+            if (attackerUnits >= 4) {
+                attacking = 3;
+            } else {
+                attacking = attackerUnits - 1;
+            }
+            if (defenderUnits >= 2) {
+                defending = 2;
+            } else {
+                defending = defenderUnits;
+            }
+
+            //throw die
+            var attack_die = [];
+            for (var i = 0; i < attacking; i++) {
+                attack_die.push(Math.floor(Math.random() * 6) + 1);
+            }
+            var defend_die = [];
+            for (var i = 0; i < defending; i++) {
+                defend_die.push(Math.floor(Math.random() * 6) + 1);
+            }
+
+            var attacks = Math.min(attacking, defending);
+            for (var i = 0; i < attacks; i++) {
+                //get best die
+                var best_defender = Math.max(...defend_die);
+                defend_die.splice(defend_die.indexOf(best_defender), 1);
+                var best_attacker = Math.max(...attack_die);
+                attack_die.splice(attack_die.indexOf(best_attacker), 1);
+                log("[" + best_attacker + "] vs. [" + best_defender + "]")
+
+                //remove units
+                if (best_attacker > best_defender) {
+                    log("killed a defender");
+                    defenderUnits--;
+                    players[defenderId] = defenderUnits;
+                    document.getElementById("player" + defenderId).value = defenderUnits;
+                } else {
+                    log("killed an attacker");
+                    attackerUnits--;
+                    players[attackerId] = attackerUnits;
+                    document.getElementById("player" + attackerId).value = attackerUnits;
+                }
+            }
+        }
+
+        //fight to the death by calling fightOne till one player is victorious
+        function fightAll() {
+            //get units
+            var battle = 1;
+
+            setPlayerUnits();
+            setAttackersDefenders();
+
+            log("This means war!");
+            while (attackers.length >= 1 && defenders.length >= 2) {
+                console.log("attackers"+attackers.length+"defenders"+defenders.length);
+                setAttackersDefenders();
+                fightOne(battle, true);
+                battle++;
+            }
+        }
+
+        //reset the player units and battle log
+        function reset() {
+            for (let id = 0; id < numPlayers; id++) {
+                document.getElementById("player"+id).value = 0;
+            }
+
+            var log = document.getElementById("log");
+            while (log.firstChild) {
+                log.removeChild(log.firstChild);
+            }
+            var p = document.createElement("p");
+            p.textContent = "battle-log:";
+            log.appendChild(p);
+        }
+    </script>
+
+</body>
+
+</html>
