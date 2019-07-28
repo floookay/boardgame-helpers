@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<style>
+    body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 40px;
+        padding: 0px;
+    }
+    #caption {
+        font-size: 30px;
+        padding: 0px;
+    }
+
+    #dice {
+        cursor: pointer;
+        margin: auto;
+        border: 3px solid #000;
+        border-radius: 8px;
+        position: relative;
+        width: 50vw;
+        height: 50vw;
+        min-height: 10em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #diceText {
+        font-size: 5em;
+    }
+</style>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>single dice</title>
+</head>
+
+<body>
+    <div id="title">Dice</div>
+    <div id="caption">click me!</div>
+
+    <div id="dice" onclick="throwDice()">
+        <div id="diceText"></div>
+    </div>
+
+    <div style="margin: 1em">
+        <input id="sides" type="number" min="2" value="6" step="1" />
+        <div style="display:inline-block"> sided</div>
+    </div>
+
+    <script>
+        function throwDice(){
+            var sides = document.getElementById("sides").value;
+            var result;
+            if(sides==""||sides==undefined){
+                result = "∞";
+            } else {
+                result = Math.floor(Math.random() * sides) + 1;
+            }
+            document.getElementById("diceText").textContent = result;
+            
+            //https://stackoverflow.com/a/11868159
+            let rgb = [0,0,0];
+            rgb[0] = Math.round(Math.random() * 255);
+            rgb[1] = Math.round(Math.random() * 255);
+            rgb[2] = Math.round(Math.random() * 255);
+            var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+            var fore = (o > 125) ? 'black' : 'white';
+            var back = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+
+            document.getElementById("diceText").style.color = fore;
+            document.getElementById("dice").style.background = back;
+        }
+    </script>
+
+</body>
+
+</html>

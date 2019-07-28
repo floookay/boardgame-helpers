@@ -5,3 +5,4 @@ They're all independent HTML files, so you can store them wherever you want.
 
 ## Games include
 -	Risk
+-   general stuff
