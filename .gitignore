@@ -1,1 +1,5 @@
+# Ignore Visual Studio settings
+.vs/
+
+# Ignore Mac specifics
 .DS_Store
