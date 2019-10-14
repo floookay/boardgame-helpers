@@ -1,4 +1,4 @@
-# Ignore Visual Studio settings
+# Ignore Visual Studio configurations
 .vs/
 *.code-workspace
 
