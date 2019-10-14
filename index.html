@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<style>
+    body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 40px;
+        padding: 0px;
+    }
+    #caption {
+        font-size: 30px;
+        padding: 0px;
+    }
+
+    .cards {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .card {
+        flex: 0 0 200px;
+        height: 200px;
+        margin: 15px;
+        border-style: solid;
+        border-width: thin;
+        border-color: grey;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+        filter: brightness(90%);
+        cursor: pointer;
+    }
+    .card-category {
+        font-size: 0.9em;
+    }
+    .card-label {
+        text-align: center;
+        vertical-align: middle;
+        line-height: 183px;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+</style>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>boardgame-helpers</title>
+</head>
+
+<body>
+    <div id="title">Boardgame Helpers</div>
+    <div id="caption">select one!</div>
+
+    <div class="cards">
+    </div>
+
+    <script>
+        const files = {
+            "general": {
+                "label": "General Helper",
+                "color": "Limegreen",
+                "files": [
+                    {
+                        "file": "single-dice.html",
+                        "label": "Throw a dice"
+                    }
+                ]
+            },
+            "risk": {
+                "label": "Helper for Risk",
+                "color": "Tomato",
+                "files": [
+                    {
+                        "file": "1v1.html",
+                        "label": "1v1"
+                    },
+                    {
+                        "file": "ffa.html",
+                        "label": "Free For All"
+                    }
+                ]
+            }
+        }
+        
+        window.onload = function() {
+            let cards = document.getElementsByClassName("cards")[0];
+            for (const folder in files) {
+                if (files.hasOwnProperty(folder)) {
+                    const category = files[folder];
+                    category.files.forEach(file => {
+                        let card = document.createElement("div");
+                        card.className = "card";
+                        card.style.backgroundColor = category.color;
+                        card.addEventListener("click",function(){
+                            window.location = `${folder}/${file.file}`;
+                        });
+
+                        let cardCategory = document.createElement("div");
+                        cardCategory.className = "card-category";
+                        cardCategory.textContent = category.label;
+
+                        let cardLabel = document.createElement("div");
+                        cardLabel.className = "card-label";
+                        cardLabel.textContent = file.label;
+
+                        card.append(cardCategory);
+                        card.append(cardLabel);
+                        cards.append(card);
+                    });
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
