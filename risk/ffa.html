@@ -47,31 +47,7 @@
     <div id="title">Risk</div>
     <div id="caption">Free For All</div>
 
-    <div class="line" style="background-color:rgb(0, 0, 0);">
-        <input class="players" id="player0" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(41, 53, 223);">
-        <input class="players" id="player1" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(190, 52, 52);">
-        <input class="players" id="player2" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(50, 205, 50);">
-        <input class="players" id="player3" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(135, 50, 205);">
-        <input class="players" id="player4" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(205, 202, 50);">
-        <input class="players" id="player5" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(50, 195, 205);">
-        <input class="players" id="player6" type="number" min="0" value="0" step="1" />
-    </div>
-    <div class="line" style="background-color:rgb(200, 50, 205);">
-        <input class="players" id="player7" type="number" min="0" value="0" step="1" />
-    </div>
-
+    <div id="players"></div>
 
     <div>
         <button type="reset" onclick="reset()" style="padding:5px 23px">Reset</button>
@@ -86,10 +62,64 @@
     </div>
 
     <script type="text/javascript">
-        var numPlayers = 8; //number of attackers
-        var players = []; //units per player by playerId
+        var players = {
+            "player0": {
+                "units": 0,
+                "color": "OrangeRed"
+            },
+            "player1": {
+                "units": 0,
+                "color": "YellowGreen"
+            },
+            "player2": {
+                "units": 0,
+                "color": "SteelBlue"
+            },
+            "player3": {
+                "units": 0,
+                "color": "Yellow"
+            },
+            "player4": {
+                "units": 0,
+                "color": "MediumVioletRed"
+            },
+            "player5": {
+                "units": 0,
+                "color": "Orange"
+            },
+            "player6": {
+                "units": 0,
+                "color": "Silver"
+            },
+            "player7": {
+                "units": 0,
+                "color": "DarkCyan"
+            }
+        };
         var attackers = []; //playerId's of possible attackers
         var defenders = []; //playerId's of possible attackers
+
+        window.onload = function() {
+            let div = document.getElementById("players");
+            for (const playerId in players) {
+                if (players.hasOwnProperty(playerId)) {
+                    const player = players[playerId];
+                    let line = document.createElement("div");
+                    let input = document.createElement("input");
+                    line.className = "line";
+                    line.style.backgroundColor = player.color;
+                    input.className = "players";
+                    input.id = playerId;
+                    input.type = "number";
+                    input.min = "0";
+                    input.value = "0";
+                    input.step = "1";
+                    input.value = player.units;
+                    line.append(input);
+                    div.append(line);
+                }
+            }
+        }
 
         function log(string) {
             let node = document.createElement("p");
@@ -99,8 +129,10 @@
 
         //get units from input fields and save to array
         function setPlayerUnits(){
-            for (let i = 0; i < numPlayers; i++) {
-                players[i] = document.getElementById("player" + i).value;
+            for (const playerId in players) {
+                if (players.hasOwnProperty(playerId)) {
+                    players[playerId].units = document.getElementById(playerId).value;
+                }
             }
         }
 
@@ -108,11 +140,13 @@
         function setAttackersDefenders(){
             attackers = [];
             defenders = [];
-            for (let i = 0; i < numPlayers; i++) {
-                if (players[i] > 1)
-                    attackers.push(i);
-                if (players[i] > 0)
-                    defenders.push(i);
+            for (const playerId in players) {
+                if (players.hasOwnProperty(playerId)) {
+                    if (players[playerId].units > 1)
+                        attackers.push(playerId);
+                    if (players[playerId].units > 0)
+                        defenders.push(playerId);
+                }
             }
         }
 
@@ -130,7 +164,7 @@
 
             //select a random attacker
             var attackerId = attackers[Math.floor(Math.random() * attackers.length)];
-            var attackerUnits = players[attackerId];
+            var attackerUnits = players[attackerId].units;
 
             //select a random defender
             let remainingDefenders = [];
@@ -140,11 +174,11 @@
                 }
             });
             var defenderId = remainingDefenders[Math.floor(Math.random() * remainingDefenders.length)];
-            var defenderUnits = players[defenderId];
+            var defenderUnits = players[defenderId].units;
 
 
             log("battle #" + battle);
-            log(attackerUnits + " attackers vs. " + defenderUnits + " defenders");
+            log(`${attackerUnits} attackers vs. ${defenderUnits} defenders`);
             //preperation
             var attacking, defending;
             if (attackerUnits >= 4) {
@@ -181,13 +215,13 @@
                 if (best_attacker > best_defender) {
                     log("killed a defender");
                     defenderUnits--;
-                    players[defenderId] = defenderUnits;
-                    document.getElementById("player" + defenderId).value = defenderUnits;
+                    players[defenderId].units = defenderUnits;
+                    document.getElementById(defenderId).value = defenderUnits;
                 } else {
                     log("killed an attacker");
                     attackerUnits--;
-                    players[attackerId] = attackerUnits;
-                    document.getElementById("player" + attackerId).value = attackerUnits;
+                    players[attackerId].units = attackerUnits;
+                    document.getElementById(attackerId).value = attackerUnits;
                 }
             }
         }
@@ -211,8 +245,11 @@
 
         //reset the player units and battle log
         function reset() {
-            for (let id = 0; id < numPlayers; id++) {
-                document.getElementById("player"+id).value = 0;
+            for (const playerId in players) {
+                if (players.hasOwnProperty(playerId)) {
+                    document.getElementById(playerId).value = 0;
+                    
+                }
             }
 
             var log = document.getElementById("log");

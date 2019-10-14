@@ -1,5 +1,6 @@
 # Ignore Visual Studio settings
 .vs/
+*.code-workspace
 
 # Ignore Mac specifics
 .DS_Store
