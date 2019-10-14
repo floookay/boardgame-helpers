@@ -33,6 +33,15 @@
         margin: auto;
         width: 50%
     }
+
+    .color-box {
+        width: 8px;
+        height: 8px;
+        border-style: solid;
+        border-width: thin;
+        border-color: black;
+        display: inline-block;
+    }
 </style>
 <html>
 
@@ -127,6 +136,28 @@
             document.getElementById("log").appendChild(node);
         }
 
+        function logTitle(attacker, defender) {
+            let node = document.createElement("p");
+            
+            let colorAttacker = document.createElement("div");
+            colorAttacker.className = "color-box";
+            colorAttacker.style.backgroundColor = attacker.color;
+            let textAttacker = document.createElement("div");
+            textAttacker.textContent = ` ${attacker.units} attackers  vs.  `;
+            textAttacker.style.display = "inline";
+            let colorDefender = document.createElement("div");
+            colorDefender.className = "color-box";
+            colorDefender.style.backgroundColor = defender.color;
+            let textDefender = document.createElement("div");
+            textDefender.textContent = ` ${defender.units} defenders`;
+            textDefender.style.display = "inline";
+            node.append(colorAttacker);
+            node.append(textAttacker);
+            node.append(colorDefender);
+            node.append(textDefender);
+            document.getElementById("log").appendChild(node);
+        }
+
         //get units from input fields and save to array
         function setPlayerUnits(){
             for (const playerId in players) {
@@ -164,7 +195,7 @@
 
             //select a random attacker
             var attackerId = attackers[Math.floor(Math.random() * attackers.length)];
-            var attackerUnits = players[attackerId].units;
+            var attacker = players[attackerId];
 
             //select a random defender
             let remainingDefenders = [];
@@ -174,22 +205,22 @@
                 }
             });
             var defenderId = remainingDefenders[Math.floor(Math.random() * remainingDefenders.length)];
-            var defenderUnits = players[defenderId].units;
+            var defender = players[defenderId];
 
 
             log("battle #" + battle);
-            log(`${attackerUnits} attackers vs. ${defenderUnits} defenders`);
+            logTitle(attacker, defender);
             //preperation
             var attacking, defending;
-            if (attackerUnits >= 4) {
+            if (attacker.units >= 4) {
                 attacking = 3;
             } else {
-                attacking = attackerUnits - 1;
+                attacking = attacker.units - 1;
             }
-            if (defenderUnits >= 2) {
+            if (defender.units >= 2) {
                 defending = 2;
             } else {
-                defending = defenderUnits;
+                defending = defender.units;
             }
 
             //throw die
@@ -214,14 +245,14 @@
                 //remove units
                 if (best_attacker > best_defender) {
                     log("killed a defender");
-                    defenderUnits--;
-                    players[defenderId].units = defenderUnits;
-                    document.getElementById(defenderId).value = defenderUnits;
+                    defender.units--;
+                    players[defenderId].units = defender.units;
+                    document.getElementById(defenderId).value = defender.units;
                 } else {
                     log("killed an attacker");
-                    attackerUnits--;
-                    players[attackerId].units = attackerUnits;
-                    document.getElementById(attackerId).value = attackerUnits;
+                    attacker.units--;
+                    players[attackerId].units = attacker.units;
+                    document.getElementById(attackerId).value = attacker.units;
                 }
             }
         }
