@@ -32,6 +32,15 @@
     #diceText {
         font-size: 5em;
     }
+
+    @media (prefers-color-scheme: dark) {
+        #title, #caption {
+            color: #cecece;
+        }
+        body {
+            background-color: #242424;
+        }
+    }
 </style>
 <html>
 
@@ -56,6 +65,10 @@
     </div>
 
     <script>
+        function isDarkModeActive() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
         function throwDice(){
             var sides = document.getElementById("sides").value;
             var result;
@@ -66,11 +79,13 @@
             }
             document.getElementById("diceText").textContent = result;
             
+            let maxValue = isDarkModeActive()? 128 : 255;
+
             //https://stackoverflow.com/a/11868159
             let rgb = [0,0,0];
-            rgb[0] = Math.round(Math.random() * 255);
-            rgb[1] = Math.round(Math.random() * 255);
-            rgb[2] = Math.round(Math.random() * 255);
+            rgb[0] = Math.round(Math.random() * maxValue);
+            rgb[1] = Math.round(Math.random() * maxValue);
+            rgb[2] = Math.round(Math.random() * maxValue);
             var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
             var fore = (o > 125) ? 'black' : 'white';
             var back = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';

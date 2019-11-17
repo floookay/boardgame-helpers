@@ -46,6 +46,18 @@
         font-size: 1.1em;
         font-weight: bold;
     }
+
+    @media (prefers-color-scheme: dark) {
+        #title {
+            color: #cecece;
+        }
+        #caption {
+            color: #cecece;
+        }
+        body {
+            background-color: #242424;
+        }
+    }
 </style>
 <html>
 
@@ -64,6 +76,10 @@
     </div>
 
     <script>
+        function isDarkModeActive() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        
         const files = {
             "general": {
                 "label": "General Helper",

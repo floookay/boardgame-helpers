@@ -33,6 +33,15 @@
         margin: auto;
         width: 50%
     }
+
+    @media (prefers-color-scheme: dark) {
+        #title, #caption, #log {
+            color: #cecece;
+        }
+        body {
+            background-color: #242424;
+        }
+    }
 </style>
 <html>
 
@@ -66,6 +75,10 @@
     </div>
 
     <script>
+        function isDarkModeActive() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
         function log(string) {
             let node = document.createElement("p");
             node.textContent = string;

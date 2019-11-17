@@ -42,6 +42,18 @@
         border-color: black;
         display: inline-block;
     }
+
+    @media (prefers-color-scheme: dark) {
+        #title, #log, #caption {
+            color: #cecece;
+        }
+        .color-box {
+            border-color: white;
+        }
+        body {
+            background-color: #242424;
+        }
+    }
 </style>
 <html>
 
@@ -71,6 +83,10 @@
     </div>
 
     <script type="text/javascript">
+        function isDarkModeActive() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
         var players = {
             "player0": {
                 "units": 0,
