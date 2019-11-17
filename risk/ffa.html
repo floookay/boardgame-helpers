@@ -265,6 +265,10 @@
             setPlayerUnits();
             setAttackersDefenders();
 
+            //pre-requirements
+            if (attackers.length < 1 || defenders.length < 2)
+                return;
+
             log("This means war!");
             while (attackers.length >= 1 && defenders.length >= 2) {
                 console.log("attackers"+attackers.length+"defenders"+defenders.length);

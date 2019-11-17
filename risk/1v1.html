@@ -78,7 +78,7 @@
             var defender = document.getElementById("defender").value;
 
             //pre-requirements
-            if (attacker <= 1) {
+            if (attacker <= 1 || defender == 0) {
                 return;
             }
 
@@ -136,7 +136,7 @@
             var battle = 1;
 
             //pre-requirements
-            if (attacker <= 1) {
+            if (attacker <= 1 || defender == 0) {
                 return;
             }
 
