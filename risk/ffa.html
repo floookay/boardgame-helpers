@@ -23,7 +23,13 @@
     }
 
     .players {
+        height: 22px;
         width: 60px;
+        display: inline-block;
+    }
+
+    .info {
+        display: inline;
     }
 
     #log {
@@ -123,6 +129,7 @@
         };
         var attackers = []; //playerId's of possible attackers
         var defenders = []; //playerId's of possible attackers
+        var infos = []; //playerId's of the last winner(s)
 
         window.onload = function() {
             let div = document.getElementById("players");
@@ -130,9 +137,12 @@
                 if (players.hasOwnProperty(playerId)) {
                     const player = players[playerId];
                     let line = document.createElement("div");
+                    let info_left = document.createElement("div");
                     let input = document.createElement("input");
+                    let info_right = document.createElement("div");
                     line.className = "line";
                     line.style.backgroundColor = player.color;
+                    info_left.className = "info";
                     input.className = "players";
                     input.id = playerId;
                     input.type = "number";
@@ -140,7 +150,11 @@
                     input.value = "0";
                     input.step = "1";
                     input.value = player.units;
+                    input.addEventListener('change', clearInfo);
+                    info_right.className = "info";
+                    line.append(info_left);
                     line.append(input);
+                    line.append(info_right);
                     div.append(line);
                 }
             }
@@ -198,11 +212,12 @@
         }
 
         //fight a single battle by selecting a random attacker and random defender
-        function fightOne(battle, fightAll) {
+        function fightOne(battleNr, fightAll) {
             //get units
-            if(fightAll == false){
+            if(!fightAll){
                 setPlayerUnits();
                 setAttackersDefenders();
+                clearInfo();
             }
 
             //pre-requirements
@@ -223,9 +238,21 @@
             var defenderId = remainingDefenders[Math.floor(Math.random() * remainingDefenders.length)];
             var defender = players[defenderId];
 
-
-            log("battle #" + battle);
+            log("battle #" + battleNr);
             logTitle(attacker, defender);
+            if (!fightAll) {
+                let attackerInfos = document.getElementById(attackerId).parentNode.getElementsByClassName('info');
+                for (const info of attackerInfos) {
+                    info.innerHTML = "⚔️";
+                }
+                infos.push(attackerId);
+                let defenderInfos = document.getElementById(defenderId).parentNode.getElementsByClassName('info');
+                for (const info of defenderInfos) {
+                    info.innerHTML = "🛡️";
+                }
+                infos.push(defenderId);
+            }
+
             //preperation
             var attacking, defending;
             if (attacker.units >= 4) {
@@ -256,7 +283,7 @@
                 defend_die.splice(defend_die.indexOf(best_defender), 1);
                 var best_attacker = Math.max(...attack_die);
                 attack_die.splice(attack_die.indexOf(best_attacker), 1);
-                log("[" + best_attacker + "] vs. [" + best_defender + "]")
+                log("[" + best_attacker + "] vs. [" + best_defender + "]");
 
                 //remove units
                 if (best_attacker > best_defender) {
@@ -280,6 +307,7 @@
 
             setPlayerUnits();
             setAttackersDefenders();
+            clearInfo();
 
             //pre-requirements
             if (attackers.length < 1 || defenders.length < 2)
@@ -292,6 +320,28 @@
                 fightOne(battle, true);
                 battle++;
             }
+
+            //highlight winner(s)
+            for (const playerId in players) {
+                console.log("in");
+                if (players.hasOwnProperty(playerId) && players[playerId].units > 0) {
+                    infos.push(playerId);
+                    let playerInfos = document.getElementById(playerId).parentNode.getElementsByClassName('info');
+                    for (const info of playerInfos) {
+                        info.innerHTML = "👑";
+                    }
+                }
+            }
+        }
+
+        function clearInfo() {
+            if (infos.length > 0) {
+                let infoClasses = document.getElementsByClassName('info');
+                for (const info of infoClasses) {
+                    info.innerHTML = "";
+                }
+            }
+            infos = [];
         }
 
         //reset the player units and battle log
@@ -299,9 +349,10 @@
             for (const playerId in players) {
                 if (players.hasOwnProperty(playerId)) {
                     document.getElementById(playerId).value = 0;
-                    
                 }
             }
+            
+            clearInfo();
 
             var log = document.getElementById("log");
             while (log.firstChild) {
