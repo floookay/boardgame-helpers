@@ -4,42 +4,35 @@
         text-align: center;
         font-family: Verdana, Geneva, sans-serif;
     }
-
     #title {
         font-weight: bold;
         font-size: 40px;
         padding: 0px;
     }
-
     #caption {
         font-size: 30px;
         padding: 0px;
     }
-
     .line {
         padding: 15px;
         margin: 15px auto;
         width: 80%;
     }
-
     .players {
         height: 22px;
         width: 60px;
         display: inline-block;
     }
-
     .info {
         display: inline;
     }
-
     #log {
         padding-top: 15px;
         font-family: monospace;
         text-align: left;
         margin: auto;
-        width: 50%
+        width: 50%;
     }
-
     .color-box {
         width: 8px;
         height: 8px;
@@ -48,7 +41,6 @@
         border-color: black;
         display: inline-block;
     }
-
     @media (prefers-color-scheme: dark) {
         #title, #log, #caption {
             color: #cecece;
@@ -62,309 +54,313 @@
     }
 </style>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Risk - FFA</title>
-</head>
-
-<body>
-    <div id="title">Risk</div>
-    <div id="caption">Free For All</div>
-
-    <div id="players"></div>
-
-    <div>
-        <button type="reset" onclick="reset()" style="padding:5px 23px">Reset</button>
-        <button type="submit" onclick="fightOne(1,false)" style="padding:5px 10px">Battle</button>
-    </div>
-    <div>
-        <button type="submit" onclick="fightAll()" style="padding:5px 41px">Battle to death</button>
-    </div>
-
-    <div id="log">
-        <p>battle-log:</p>
-    </div>
-
-    <script type="text/javascript">
-        function isDarkModeActive() {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
-
-        var players = {
-            "player0": {
-                "units": 0,
-                "color": "OrangeRed"
-            },
-            "player1": {
-                "units": 0,
-                "color": "YellowGreen"
-            },
-            "player2": {
-                "units": 0,
-                "color": "SteelBlue"
-            },
-            "player3": {
-                "units": 0,
-                "color": "Yellow"
-            },
-            "player4": {
-                "units": 0,
-                "color": "MediumVioletRed"
-            },
-            "player5": {
-                "units": 0,
-                "color": "Orange"
-            },
-            "player6": {
-                "units": 0,
-                "color": "Silver"
-            },
-            "player7": {
-                "units": 0,
-                "color": "DarkCyan"
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Risk - FFA</title>
+    </head>
+    <body>
+        <div id="title">Risk</div>
+        <div id="caption">Free For All</div>
+        <div id="players"></div>
+        <div>
+            <button type="reset" onclick="reset()" style="padding: 5px 23px">
+                Reset
+            </button>
+            <button
+                type="submit"
+                onclick="fightOne(1, false)"
+                style="padding: 5px 10px"
+            >
+                Battle
+            </button>
+        </div>
+        <div>
+            <button
+                type="submit"
+                onclick="fightAll()"
+                style="padding: 5px 41px"
+            >
+                Battle to death
+            </button>
+        </div>
+        <div id="log">
+            <p>battle-log:</p>
+        </div>
+        <script type="text/javascript">
+            function isDarkModeActive() {
+                return window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches;
             }
-        };
-        var attackers = []; //playerId's of possible attackers
-        var defenders = []; //playerId's of possible attackers
-        var infos = []; //playerId's of the last winner(s)
-
-        window.onload = function() {
-            let div = document.getElementById("players");
-            for (const playerId in players) {
-                if (players.hasOwnProperty(playerId)) {
-                    const player = players[playerId];
-                    let line = document.createElement("div");
-                    let info_left = document.createElement("div");
-                    let input = document.createElement("input");
-                    let info_right = document.createElement("div");
-                    line.className = "line";
-                    line.style.backgroundColor = player.color;
-                    info_left.className = "info";
-                    input.className = "players";
-                    input.id = playerId;
-                    input.type = "number";
-                    input.min = "0";
-                    input.max = "1000";
-                    input.value = "0";
-                    input.step = "1";
-                    input.value = player.units;
-                    input.addEventListener('change', clearInfo);
-                    info_right.className = "info";
-                    line.append(info_left);
-                    line.append(input);
-                    line.append(info_right);
-                    div.append(line);
+            let players = {
+                player0: {
+                    units: 0,
+                    color: "OrangeRed",
+                },
+                player1: {
+                    units: 0,
+                    color: "YellowGreen",
+                },
+                player2: {
+                    units: 0,
+                    color: "SteelBlue",
+                },
+                player3: {
+                    units: 0,
+                    color: "Yellow",
+                },
+                player4: {
+                    units: 0,
+                    color: "MediumVioletRed",
+                },
+                player5: {
+                    units: 0,
+                    color: "Orange",
+                },
+                player6: {
+                    units: 0,
+                    color: "Silver",
+                },
+                player7: {
+                    units: 0,
+                    color: "DarkCyan",
+                },
+            };
+            let attackers = []; //playerId's of possible attackers
+            let defenders = []; //playerId's of possible attackers
+            let infos = []; //playerId's of the last winner(s)
+            window.onload = function () {
+                let div = document.getElementById("players");
+                for (const playerId in players) {
+                    if (players.hasOwnProperty(playerId)) {
+                        const player = players[playerId];
+                        let line = document.createElement("div");
+                        let info_left = document.createElement("div");
+                        let input = document.createElement("input");
+                        let info_right = document.createElement("div");
+                        line.className = "line";
+                        line.style.backgroundColor = player.color;
+                        info_left.className = "info";
+                        input.className = "players";
+                        input.id = playerId;
+                        input.type = "number";
+                        input.min = "0";
+                        input.max = "1000";
+                        input.value = "0";
+                        input.step = "1";
+                        input.value = player.units;
+                        input.addEventListener("change", clearInfo);
+                        info_right.className = "info";
+                        line.append(info_left);
+                        line.append(input);
+                        line.append(info_right);
+                        div.append(line);
+                    }
                 }
+            };
+            function log(string) {
+                let node = document.createElement("p");
+                node.textContent = string;
+                document.getElementById("log").appendChild(node);
             }
-        }
+            function logTitle(attacker, defender) {
+                let node = document.createElement("p");
 
-        function log(string) {
-            let node = document.createElement("p");
-            node.textContent = string;
-            document.getElementById("log").appendChild(node);
-        }
-
-        function logTitle(attacker, defender) {
-            let node = document.createElement("p");
-            
-            let colorAttacker = document.createElement("div");
-            colorAttacker.className = "color-box";
-            colorAttacker.style.backgroundColor = attacker.color;
-            let textAttacker = document.createElement("div");
-            textAttacker.textContent = ` ${attacker.units} attackers  vs.  `;
-            textAttacker.style.display = "inline";
-            let colorDefender = document.createElement("div");
-            colorDefender.className = "color-box";
-            colorDefender.style.backgroundColor = defender.color;
-            let textDefender = document.createElement("div");
-            textDefender.textContent = ` ${defender.units} defenders`;
-            textDefender.style.display = "inline";
-            node.append(colorAttacker);
-            node.append(textAttacker);
-            node.append(colorDefender);
-            node.append(textDefender);
-            document.getElementById("log").appendChild(node);
-        }
-
-        //get units from input fields and save to array
-        function setPlayerUnits(){
-            for (const playerId in players) {
-                if (players.hasOwnProperty(playerId)) {
-                    players[playerId].units = document.getElementById(playerId).value;
-                }
+                let colorAttacker = document.createElement("div");
+                colorAttacker.className = "color-box";
+                colorAttacker.style.backgroundColor = attacker.color;
+                let textAttacker = document.createElement("div");
+                textAttacker.textContent = ` ${attacker.units} attackers  vs.  `;
+                textAttacker.style.display = "inline";
+                let colorDefender = document.createElement("div");
+                colorDefender.className = "color-box";
+                colorDefender.style.backgroundColor = defender.color;
+                let textDefender = document.createElement("div");
+                textDefender.textContent = ` ${defender.units} defenders`;
+                textDefender.style.display = "inline";
+                node.append(colorAttacker);
+                node.append(textAttacker);
+                node.append(colorDefender);
+                node.append(textDefender);
+                document.getElementById("log").appendChild(node);
             }
-        }
-
-        //delete previous attackers and set them again using the array
-        function setAttackersDefenders(){
-            attackers = [];
-            defenders = [];
-            for (const playerId in players) {
-                if (players.hasOwnProperty(playerId)) {
-                    if (players[playerId].units > 1)
-                        attackers.push(playerId);
-                    if (players[playerId].units > 0)
-                        defenders.push(playerId);
-                }
-            }
-        }
-
-        //fight a single battle by selecting a random attacker and random defender
-        function fightOne(battleNr, fightAll) {
-            //get units
-            if(!fightAll){
-                setPlayerUnits();
-                setAttackersDefenders();
-                clearInfo();
-            }
-
-            //pre-requirements
-            if (attackers.length < 1 || defenders.length < 2)
-                return;
-
-            //select a random attacker
-            var attackerId = attackers[Math.floor(Math.random() * attackers.length)];
-            var attacker = players[attackerId];
-
-            //select a random defender
-            let remainingDefenders = [];
-            defenders.forEach(defenderId => {
-                if (defenderId != attackerId) {
-                    remainingDefenders.push(defenderId);
-                }
-            });
-            var defenderId = remainingDefenders[Math.floor(Math.random() * remainingDefenders.length)];
-            var defender = players[defenderId];
-
-            log("battle #" + battleNr);
-            logTitle(attacker, defender);
-            if (!fightAll) {
-                let attackerInfos = document.getElementById(attackerId).parentNode.getElementsByClassName('info');
-                for (const info of attackerInfos) {
-                    info.innerHTML = "⚔️";
-                }
-                infos.push(attackerId);
-                let defenderInfos = document.getElementById(defenderId).parentNode.getElementsByClassName('info');
-                for (const info of defenderInfos) {
-                    info.innerHTML = "🛡️";
-                }
-                infos.push(defenderId);
-            }
-
-            //preperation
-            var attacking, defending;
-            if (attacker.units >= 4) {
-                attacking = 3;
-            } else {
-                attacking = attacker.units - 1;
-            }
-            if (defender.units >= 2) {
-                defending = 2;
-            } else {
-                defending = defender.units;
-            }
-
-            //throw die
-            var attack_die = [];
-            for (var i = 0; i < attacking; i++) {
-                attack_die.push(Math.floor(Math.random() * 6) + 1);
-            }
-            var defend_die = [];
-            for (var i = 0; i < defending; i++) {
-                defend_die.push(Math.floor(Math.random() * 6) + 1);
-            }
-
-            var attacks = Math.min(attacking, defending);
-            for (var i = 0; i < attacks; i++) {
-                //get best die
-                var best_defender = Math.max(...defend_die);
-                defend_die.splice(defend_die.indexOf(best_defender), 1);
-                var best_attacker = Math.max(...attack_die);
-                attack_die.splice(attack_die.indexOf(best_attacker), 1);
-                log("[" + best_attacker + "] vs. [" + best_defender + "]");
-
-                //remove units
-                if (best_attacker > best_defender) {
-                    log("killed a defender");
-                    defender.units--;
-                    players[defenderId].units = defender.units;
-                    document.getElementById(defenderId).value = defender.units;
-                } else {
-                    log("killed an attacker");
-                    attacker.units--;
-                    players[attackerId].units = attacker.units;
-                    document.getElementById(attackerId).value = attacker.units;
-                }
-            }
-        }
-
-        //fight to the death by calling fightOne till one player is victorious
-        function fightAll() {
-            //get units
-            var battle = 1;
-
-            setPlayerUnits();
-            setAttackersDefenders();
-            clearInfo();
-
-            //pre-requirements
-            if (attackers.length < 1 || defenders.length < 2)
-                return;
-
-            log("This means war!");
-            while (attackers.length >= 1 && defenders.length >= 2) {
-                console.log("attackers"+attackers.length+"defenders"+defenders.length);
-                setAttackersDefenders();
-                fightOne(battle, true);
-                battle++;
-            }
-
-            //highlight winner(s)
-            for (const playerId in players) {
-                console.log("in");
-                if (players.hasOwnProperty(playerId) && players[playerId].units > 0) {
-                    infos.push(playerId);
-                    let playerInfos = document.getElementById(playerId).parentNode.getElementsByClassName('info');
-                    for (const info of playerInfos) {
-                        info.innerHTML = "👑";
+            //get units from input fields and save to array
+            function setPlayerUnits() {
+                for (const playerId in players) {
+                    if (players.hasOwnProperty(playerId)) {
+                        players[playerId].units = document.getElementById(
+                            playerId
+                        ).value;
                     }
                 }
             }
-        }
-
-        function clearInfo() {
-            if (infos.length > 0) {
-                let infoClasses = document.getElementsByClassName('info');
-                for (const info of infoClasses) {
-                    info.innerHTML = "";
+            //delete previous attackers and set them again using the array
+            function setAttackersDefenders() {
+                attackers = [];
+                defenders = [];
+                for (const playerId in players) {
+                    if (players.hasOwnProperty(playerId)) {
+                        if (players[playerId].units > 1)
+                            attackers.push(playerId);
+                        if (players[playerId].units > 0)
+                            defenders.push(playerId);
+                    }
                 }
             }
-            infos = [];
-        }
-
-        //reset the player units and battle log
-        function reset() {
-            for (const playerId in players) {
-                if (players.hasOwnProperty(playerId)) {
-                    document.getElementById(playerId).value = 0;
+            //fight a single battle by selecting a random attacker and random defender
+            function fightOne(battleNr, fightAll) {
+                //get units
+                if (!fightAll) {
+                    setPlayerUnits();
+                    setAttackersDefenders();
+                    clearInfo();
+                }
+                //pre-requirements
+                if (attackers.length < 1 || defenders.length < 2) return;
+                //select a random attacker
+                let attackerId =
+                    attackers[Math.floor(Math.random() * attackers.length)];
+                let attacker = players[attackerId];
+                //select a random defender
+                let remainingDefenders = [];
+                defenders.forEach((defenderId) => {
+                    if (defenderId != attackerId) {
+                        remainingDefenders.push(defenderId);
+                    }
+                });
+                let defenderId =
+                    remainingDefenders[
+                        Math.floor(Math.random() * remainingDefenders.length)
+                    ];
+                let defender = players[defenderId];
+                log(`battle #${battleNr}`);
+                logTitle(attacker, defender);
+                if (!fightAll) {
+                    let attackerInfos = document
+                        .getElementById(attackerId)
+                        .parentNode.getElementsByClassName("info");
+                    for (const info of attackerInfos) {
+                        info.innerHTML = "⚔️";
+                    }
+                    infos.push(attackerId);
+                    let defenderInfos = document
+                        .getElementById(defenderId)
+                        .parentNode.getElementsByClassName("info");
+                    for (const info of defenderInfos) {
+                        info.innerHTML = "🛡️";
+                    }
+                    infos.push(defenderId);
+                }
+                //preperation
+                let attacking, defending;
+                if (attacker.units >= 4) {
+                    attacking = 3;
+                } else {
+                    attacking = attacker.units - 1;
+                }
+                if (defender.units >= 2) {
+                    defending = 2;
+                } else {
+                    defending = defender.units;
+                }
+                //throw die
+                let attack_die = [];
+                for (let i = 0; i < attacking; i++) {
+                    attack_die.push(Math.floor(Math.random() * 6) + 1);
+                }
+                let defend_die = [];
+                for (let i = 0; i < defending; i++) {
+                    defend_die.push(Math.floor(Math.random() * 6) + 1);
+                }
+                let attacks = Math.min(attacking, defending);
+                for (let i = 0; i < attacks; i++) {
+                    //get best die
+                    let best_defender = Math.max(...defend_die);
+                    defend_die.splice(defend_die.indexOf(best_defender), 1);
+                    let best_attacker = Math.max(...attack_die);
+                    attack_die.splice(attack_die.indexOf(best_attacker), 1);
+                    log(`[${best_attacker}] vs. [${best_defender}]`);
+                    //remove units
+                    if (best_attacker > best_defender) {
+                        log("killed a defender");
+                        defender.units--;
+                        players[defenderId].units = defender.units;
+                        document.getElementById(defenderId).value =
+                            defender.units;
+                    } else {
+                        log("killed an attacker");
+                        attacker.units--;
+                        players[attackerId].units = attacker.units;
+                        document.getElementById(attackerId).value =
+                            attacker.units;
+                    }
                 }
             }
-            
-            clearInfo();
-
-            var log = document.getElementById("log");
-            while (log.firstChild) {
-                log.removeChild(log.firstChild);
+            //fight to the death by calling fightOne till one player is victorious
+            function fightAll() {
+                //get units
+                let battle = 1;
+                setPlayerUnits();
+                setAttackersDefenders();
+                clearInfo();
+                //pre-requirements
+                if (attackers.length < 1 || defenders.length < 2) return;
+                log("This means war!");
+                while (attackers.length >= 1 && defenders.length >= 2) {
+                    console.log(
+                        "attackers" +
+                            attackers.length +
+                            "defenders" +
+                            defenders.length
+                    );
+                    setAttackersDefenders();
+                    fightOne(battle, true);
+                    battle++;
+                }
+                //highlight winner(s)
+                for (const playerId in players) {
+                    console.log("in");
+                    if (
+                        players.hasOwnProperty(playerId) &&
+                        players[playerId].units > 0
+                    ) {
+                        infos.push(playerId);
+                        let playerInfos = document
+                            .getElementById(playerId)
+                            .parentNode.getElementsByClassName("info");
+                        for (const info of playerInfos) {
+                            info.innerHTML = "👑";
+                        }
+                    }
+                }
             }
-            var p = document.createElement("p");
-            p.textContent = "battle-log:";
-            log.appendChild(p);
-        }
-    </script>
+            function clearInfo() {
+                if (infos.length > 0) {
+                    let infoClasses = document.getElementsByClassName("info");
+                    for (const info of infoClasses) {
+                        info.innerHTML = "";
+                    }
+                }
+                infos = [];
+            }
+            //reset the player units and battle log
+            function reset() {
+                for (const playerId in players) {
+                    if (players.hasOwnProperty(playerId)) {
+                        document.getElementById(playerId).value = 0;
+                    }
+                }
 
-</body>
-
+                clearInfo();
+                let log = document.getElementById("log");
+                while (log.firstChild) {
+                    log.removeChild(log.firstChild);
+                }
+                let p = document.createElement("p");
+                p.textContent = "battle-log:";
+                log.appendChild(p);
+            }
+        </script>
+    </body>
 </html>
