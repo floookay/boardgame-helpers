@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<style>
+    body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 40px;
+        padding: 0px;
+    }
+
+    #caption {
+        font-size: 30px;
+        padding: 0px;
+    }
+    .tokens {
+        margin: 50px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .token {
+        width: 100px;
+    }
+    .token input {
+        width: 80px;
+    }
+    .token label {
+        display: inline-block;
+        width: 70px;
+        height: 70px;
+        background: rgb(221, 173, 84);
+        border-radius: 50%;
+        font-size:2rem;
+    }
+    #chaostoken {
+        display: inline-block;
+        width: 50vw;
+		height: 50vw;
+        background: rgb(194, 150, 68);
+        border-radius: 50%;
+        font-size: 40vw;
+        cursor: pointer;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        #title, #caption, #log {
+            color: #cecece;
+        }
+        body {
+            background-color: #242424;
+        }
+    }
+</style>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Arkham Horror - Chaos Bag</title>
+</head>
+
+<body>
+    <div id="title">Arkham Horror - Chaos Bag</div>
+    <div id="caption">manage your chaos bag and create chaos</div>
+    
+    <div id="tokens" class="tokens"></div>
+    <div class="tokens">
+        <div id="chaostoken" onclick="grabChaos()"><div style="font-size: 10rem"><br>add<br>chaos</div></div>
+    </div>
+
+
+
+
+
+
+    <script>
+        function isDarkModeActive() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        var chaos_bag = [];
+        const token_types = {
+            "plus-one" : {"label": "+1", "value": 1, "max": 4},
+            "zero" : {"label": "0", "value": 2, "max": 4},
+            "minus-one" : {"label": "-1", "value": 3, "max": 5},
+            "minus-two" : {"label": "-2", "value": 2, "max": 4},
+            "minus-three" : {"label": "-3", "value": 1, "max": 3},
+            "minus-four" : {"label": "-4", "value": 1, "max": 3},
+            "minus-five" : {"label": "-5", "value": 0, "max": 3},
+            "minus-six" : {"label": "-6", "value": 0, "max": 2},
+            "minus-seven" : {"label": "-7", "value": 0, "max": 1},
+            "minus-eight" : {"label": "-8", "value": 0, "max": 1},
+            "skull" : {"label": "💀", "value": 2, "max": 4},
+            "cultist" : {"label": "🥷", "value": 1, "max": 4},
+            "elder-thing" : {"label": "🛡️", "value": 0, "max": 4},
+            "tablet" : {"label": "📜", "value": 1, "max": 4},
+            "auto-fail" : {"label": "🐙", "value": 1, "max": 2},
+            "elder-sign" : {"label": "⛤", "value": 1, "max": 2}
+        };
+        window.onload = function() {
+            let tokens = document.getElementById("tokens");
+            for (const token_id in token_types) {
+                if (token_types.hasOwnProperty(token_id)) {
+                    let token = document.createElement("div");
+                    token.className = "token";
+
+                    let input = document.createElement("input");
+                    input.id = token_id;
+                    input.type = "number";
+                    input.value = token_types[token_id]["value"];
+                    input.min = 0;
+                    input.step = 1;
+                    input.max = token_types[token_id]["max"];
+                    input.addEventListener("change", updateBag);
+
+                    let label = document.createElement("label");
+                    label.htmlFor = token_id;
+                    label.textContent = token_types[token_id]["label"];
+
+                    token.append(label);
+                    token.append(input);
+                    tokens.append(token);
+                }
+            }
+            updateBag();
+        }
+        // todo maybe save bag in local storage
+
+        function updateBag()
+        {
+            chaos_bag = [];
+            for (const token_id in token_types) {
+                if (token_types.hasOwnProperty(token_id)) {
+                    token = document.getElementById(token_id);
+                    for (let i = 0; i < token.value; i++) {
+                        chaos_bag.push(token_id);
+                    }
+                }
+            }
+        }
+
+        function grabChaos()
+        {
+            let chaostoken = document.getElementById("chaostoken");
+            index = Math.floor(Math.random() * chaos_bag.length);
+            token_id = chaos_bag[index];
+            chaostoken.innerHTML = token_types[token_id]["label"];
+        }
+
+    </script>
+
+</body>
+
+</html>
