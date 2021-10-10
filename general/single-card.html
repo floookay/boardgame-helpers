@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<style>
+	body {
+		text-align: center;
+		font-family: Verdana, Geneva, sans-serif;
+	}
+	#title {
+		font-weight: bold;
+		font-size: 40px;
+		padding: 0px;
+	}
+	#caption {
+		font-size: 30px;
+		padding: 0px;
+        margin-bottom: 50px;
+	}
+	#card {
+		cursor: pointer;
+		margin: auto;
+		border: 3px solid #000;
+		border-radius: 8mm;
+		position: relative;
+		width: 57mm;
+		height: 89mm;
+		min-height: 10em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+        background-color: #fff;
+	}
+	#cardText {
+		font-size: 5em;
+	}
+	@media (prefers-color-scheme: dark) {
+		#title, #caption {
+			color: #cecece;
+		}
+		body {
+			background-color: #242424;
+		}
+	}
+</style>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>single card</title>
+	</head>
+	<body>
+		<div id="title">Playing card</div>
+		<div id="caption">click me!</div>
+		<div id="card" onclick="drawCard()">
+			<div id="cardText"></div>
+		</div>
+		<script>
+			function isDarkModeActive() {
+				return window.matchMedia("(prefers-color-scheme: dark)")
+					.matches;
+			}
+            var playing_cards = [];
+            const suits = {
+                "clubs": "♣",
+                "diamonds": "♦",
+                "hearts": "♥",
+                "spades": "♠"
+            };
+            const cards = {
+                "two": "2",
+                "three": "3",
+                "four": "4",
+                "five": "5",
+                "six": "6",
+                "seven": "7",
+                "eight": "8",
+                "nine": "9",
+                "ten": "10",
+                "jack": "🎃",
+                "queen": "👸",
+                "king": "🤴",
+                "ace": "A"
+            };
+            // todo enable modifications like discard spatzen
+            function setCards()
+            {
+                playing_cards = [];
+                for (const card in cards) {
+                    if (cards.hasOwnProperty(card)) {
+                        for (const suit in suits) {
+                            if (suits.hasOwnProperty(suit)) {
+                                playing_cards.push(cards[card] + "<br>" + suits[suit]);
+                            }
+                        }
+                    }
+                }
+            }
+            // todo maybe also add option to remember drawn cards (lazy remembering)
+			function drawCard() {
+                let result = Math.floor(Math.random() * playing_cards.length);
+                let cardValue = playing_cards[result];
+                let card = document.getElementById("cardText");
+				card.innerHTML = cardValue;
+                if(cardValue.includes("♥") || cardValue.includes("♦")) {
+				    card.style.color = "red";
+                } else {
+				    card.style.color = "black";
+                }
+			}
+
+            window.onload = function() {
+                setCards();
+            }
+		</script>
+	</body>
+</html>
