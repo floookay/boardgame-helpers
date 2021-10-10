@@ -97,10 +97,16 @@
             // todo maybe also add option to remember drawn cards (lazy remembering)
 			function drawCard() {
                 let result = Math.floor(Math.random() * playing_cards.length);
+                let cardValue = playing_cards[result];
                 let card = document.getElementById("cardText");
-				card.innerHTML = playing_cards[result];
+				card.innerHTML = cardValue;
+                if(cardValue.includes("♥") || cardValue.includes("♦")) {
+				    card.style.color = "red";
+                } else {
+				    card.style.color = "black";
+                }
 			}
-            
+
             window.onload = function() {
                 setCards();
             }
