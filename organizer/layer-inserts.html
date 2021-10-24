@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<style>
+	body {
+		text-align: center;
+		font-family: Verdana, Geneva, sans-serif;
+	}
+
+	#title {
+		font-weight: bold;
+		font-size: 40px;
+		padding: 0px;
+	}
+
+	#caption {
+		font-size: 30px;
+		padding: 0px;
+	}
+
+	/* Add your CSS here */
+
+	input {
+		width: 75px;
+	}
+	input {
+		margin-bottom: 10px;
+	}
+
+
+
+	@media (prefers-color-scheme: dark) {
+		body {
+			color: #cecece;
+		}
+		body {
+			background-color: #242424;
+		}
+	}
+</style>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Insert Layers</title>
+</head>
+
+<body>
+	<div id="title">Insert Layers</div>
+	<div id="caption">to add to your boardgame box</div>
+	
+	<form>
+		<div>
+			width x height<br>
+			<label for="size_x">
+				<input id="size_x" type="number" min="0" value="249">mm
+			</label>
+			x
+			<label for="size_y">
+				<input id="size_y" type="number" min="0" value="247">mm
+			</label>
+		</div>
+		<div>
+			<label for="size_z">
+				insert height <input id="size_z" type="number" min="0" value="90">mm
+			</label>
+		</div>
+		<div>
+			<label for="number_seperators">
+				number of seperators <input id="number_seperators" type="number" min="0" max="20" step="1" value="0" onchange="updateSeperators(event)">
+			</label>
+			<div id="seperators"></div>
+		</div>
+		<div>
+			<label for="layer_z">
+				layer height <input id="layer_z" type="number" min="0" value="3">mm
+			</label>
+		</div>
+		<button type="button" onclick="calculate()">calculate</button>
+	</form>
+	<div id="svg">
+	</div>
+
+	<script>
+		function isDarkModeActive() {
+			return window.matchMedia('(prefers-color-scheme: dark)').matches;
+		}
+
+		var size_x = document.getElementById("size_x").value;
+		var size_y = document.getElementById("size_y").value;
+		var size_z = document.getElementById("size_z").value;
+		var layer_z = document.getElementById("layer_z").value;
+		var number_seperators = document.getElementById("number_seperators").value;
+		var seperator_widths = new Array();
+
+		function updateSeperators(event)
+		{
+			let seperators = document.getElementById("seperators");
+			let number = seperators.getElementsByTagName("input").length;
+			while (event.target.value != number) {
+				if(event.target.value < number)
+				{
+					seperators.removeChild(seperators.lastChild);
+					number--;
+				}
+				else if(event.target.value > number)
+				{
+					number++;
+					let div = document.createElement("div");
+					div.innerHTML = `<div><label for="seperator${number}">width of seperator #${number} <input id="seperator${number}" type="number" min="0" value="65">mm</label></div>`;
+					seperators.appendChild(div);
+				}
+			}
+		}
+		
+		function calculate()
+		{
+			// set values
+			size_x = document.getElementById("size_x").value;
+			size_y = document.getElementById("size_y").value;
+			size_z = document.getElementById("size_z").value;
+			number_seperators = document.getElementById("number_seperators").value;
+			seperator_widths = new Array();
+			document.getElementById("seperators").childNodes.forEach(node => {
+				seperator_widths.push(node.getElementsByTagName("input")[0].value);
+			});
+			let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg.setAttribute("height", "1000px");
+			svg.setAttribute("width", "1000px");
+			for (let index = 0; index < seperator_widths.length + 2; index++)
+			{
+				let coordinates = [
+					[0, 0],
+					[size_z/2, 0],
+					[size_z/2, layer_z],
+					[size_z, layer_z],
+					[size_z, size_y - layer_z],
+					[size_z/2, size_y - layer_z],
+					[size_z/2, size_y],
+					[0, size_y]
+				];
+				let d = "";
+				let width = 0;
+				let height = 0;
+				for (x in coordinates) {
+					d += d === "" ? "M" : " L";
+					d += `${coordinates[x][0]} ${coordinates[x][1]}`;
+					maxX = Math.max(width, x);
+					maxY = Math.max(height, coordinates[x]);
+				}
+				let side = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				side.setAttribute("d", d);
+				console.log(d);
+				svg.appendChild(side);
+				break;
+			}
+			console.log(svg);
+			document.getElementById("svg").innerHTML = "";
+			document.getElementById("svg").appendChild(svg);
+		}
+
+	</script>
+
+</body>
+
+</html>
